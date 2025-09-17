@@ -1,96 +1,76 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
+using Unity.VisualScripting;
 using UnityEditor.ShortcutManagement;
 using UnityEngine;
+using System.Threading;
+using Unity.VisualScripting.Antlr3.Runtime.Tree;
 
 public class EnemyScript : MonoBehaviour
 {
     [Header("Enemy Components")]
-    [SerializeField] public GameObject player;
+
     [SerializeField] private GameObject enemy;
     [SerializeField] private float movementSpeed = 2f;
-
-    /*[Header("Enemy Layer Detection")]
-
-    [SerializeField] public static LayerMask playerLayer;
-    [SerializeField] public static Transform playerCheck;
-
-
-    public static Transform PlayerCheck
-    {
-        get { return playerCheck; }
-        set { playerCheck = value; }
-    }
-
-    public static LayerMask PlayerLayer
-    {
-        get { return playerLayer; }
-        set { playerLayer = value; }
-    }*/
-
+     
     public void OnCollisionEnter2D(Collision2D collision)
     {
-        int[] attackTypes = { 1, 2, 3 };
+        int[] attackTypes = { 1, 2, 3, 4, 5 };
         int randomAttack = attackTypes[UnityEngine.Random.Range(0, attackTypes.Length)];
         if (collision.gameObject.CompareTag("Player"))
         {
-            if (randomAttack == 1)
+            if (randomAttack == 1 || randomAttack == 3 || randomAttack == 4 || randomAttack == 5)
             {
                 EnemyType enemyType = new CommonAttack();
                 enemyType.Attack();
             }
             if (randomAttack == 2)
             {
-                EnemyType enemyType = new MultipleAttacks();
+                EnemyType enemyType = new SpecialAttack();
                 enemyType.Attack();
             }
         }
     }
-
-    
 }
 
 
 public abstract class EnemyType
 {
     public abstract void Attack();
-    
+
 }
 
 class CommonAttack : EnemyType
 {
     public override void Attack()
     {
+        
         Debug.Log("normie attack!");
+    
     }
 }
 
-class MultipleAttacks : EnemyType
-{   
-
+class SpecialAttack : EnemyType
+{
+    
     private GameObject player = GameObject.FindGameObjectWithTag("Player");
-
-    //THIS IS SO STUPID ITS ALREADY REFFERENCING THE PLAYER LAYER AND CHECK FROM THE ENEMY SCRIPT BUT UNITY CANT FIND IT WHAAAAT AHAHAHDJDJJS
-    //gonna fix next update I swear LOOLOLOL
-
-
-    /*private LayerMask playerLayer = EnemyScript.PlayerLayer;
-    private Transform playerCheck = EnemyScript.PlayerCheck;*/
-
-    /*private bool inRange()
+    private bool OnCollisionEnter2D(Collision2D collision)
     {
-        return Physics2D.OverlapCircle(playerCheck.position, 0.6f, playerLayer);
-    }*/
+        return true;
+    }
 
     public override void Attack()
-    {
-        //while (inRange())
-        //{
-        Debug.Log("multiple attacks!");
-        //}
-
+    {   
+        int attackCount = 0;
+        while (OnCollisionEnter2D(new Collision2D()) && attackCount < 3)
+        {
+            attackCount++;
+            Debug.Log("multiple attacks!");
+            
+        }
     }
 }
 

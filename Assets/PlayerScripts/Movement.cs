@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using Unity.VisualScripting;
+using UnityEditor.Tilemaps;
 using UnityEngine;
 
 public class Movement : MonoBehaviour
@@ -10,13 +12,14 @@ public class Movement : MonoBehaviour
     [SerializeField] GameObject player;
     [SerializeField] private Rigidbody2D rb;
     public int playerHealth = 3;
+     
 
     [Header("Movement Variables")]
 
     private float speed = 5f;
     private float jumpForce = 10f;
-    private float horizontal;
-    private bool isFacingRight = true;
+    public float horizontal;
+    public bool isFacingRight = true;
     private bool doubleJump = true;
 
     [Header("Ground Check")]
@@ -107,6 +110,7 @@ public class Movement : MonoBehaviour
 
     private void Flip()
     {
+
         if (isFacingRight && horizontal < 0f || !isFacingRight && horizontal > 0f)
         {
             isFacingRight = !isFacingRight;
@@ -114,6 +118,10 @@ public class Movement : MonoBehaviour
             localscale.x *= -1f;
             transform.localScale = localscale;
         }
+       
+        
+        
+
     }
 }
     
